@@ -8,6 +8,9 @@ int main() {
     struct sockaddr_in address;
     int addrlen = sizeof(address);
 
+    char hostname[1024];
+    gethostname(hostname, 1024);  // 🔥 key line
+
     server_fd = socket(AF_INET, SOCK_STREAM, 0);
 
     address.sin_family = AF_INET;
@@ -18,8 +21,7 @@ int main() {
     listen(server_fd, 3);
 
     std::string response =
-        "HTTP/1.1 200 OK\nContent-Type: text/plain\n\n"
-        "Served by backend container\n";
+        "HTTP/1.1 200 OK\nContent-Type: text/plain\n\nServed by backend: " + std::string(hostname);
 
     while (true) {
         new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen);
